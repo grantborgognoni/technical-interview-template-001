@@ -45,14 +45,26 @@ export async function fetchDashboardData() {
 }
 
 export async function fetchUserData(userId: string) {
-  const userResponse = await fetch(`/api/users/${userId}`);
-  const userData = (await userResponse.json()) as User;
+  try {
+    // This ties into TECH-004/005. A consistent pattern for requests and responses need to be developed.
+    // and it's 12:54 AM rn and I'm exhausted.
+    // So here's in words what I would do.
+    // for all api routes, I would use standard response statuses and error messages as my form of error handling.
+    // these would be displayed on the frontend.
+    // Now in terms of refactoring, I would probably just implement react query. There's no need to build out my own system unless
+    // we have some niche requirement. Ok, goodnight.
+    const userResponse = await fetch(`/api/users/${userId}`);
+    const userData = (await userResponse.json()) as User;
 
-  const projectsResponse = await fetch(`/api/users/${userId}/projects`);
-  const projectsData = (await projectsResponse.json()) as Project[];
+    const projectsResponse = await fetch(`/api/users/${userId}/projects`);
+    const projectsData = (await projectsResponse.json()) as Project[];
 
-  return {
-    ...userData,
-    projects: projectsData,
-  };
+    return {
+      ...userData,
+      projects: projectsData,
+    };
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return {};
+  }
 }
