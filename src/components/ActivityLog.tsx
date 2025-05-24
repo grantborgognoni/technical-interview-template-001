@@ -16,8 +16,10 @@ export default function ActivityLog() {
     const fetchActivities = async () => {
       try {
         const response = await fetch("/api/activities");
-        const data = (await response.json()) as Activity[];
-        setActivities(data);
+        const { activities } = (await response.json()) as {
+          activities: Activity[];
+        };
+        setActivities(activities);
         setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch activities", error);
