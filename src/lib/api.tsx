@@ -13,7 +13,7 @@ export async function fetchDashboardData() {
       (res) => res.json() as Promise<Project[]>,
     );
     const activitiesResponse = await fetch("/api/activities").then(
-      (res) => res.json() as Promise<Activity[]>,
+      (res) => res.json() as Promise<{ activities: Activity[] }>,
     );
     const metricsResponse = await fetch("/api/metrics").then(
       (res) => res.json() as Promise<Metrics>,
@@ -25,7 +25,7 @@ export async function fetchDashboardData() {
     const mergedData = {
       users: usersResponse,
       projects: projectsResponse,
-      recentActivity: activitiesResponse.slice(0, 5),
+      recentActivity: activitiesResponse.activities.slice(0, 5),
       metrics: {
         activeUsers: metricsResponse.users.active,
         completedProjects: metricsResponse.projects.completed,
