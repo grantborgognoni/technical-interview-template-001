@@ -18,10 +18,6 @@ export default function ProjectStatus() {
         const response = await fetch("/api/projects");
         const { data } = (await response.json()) as { data: Project[] };
 
-        await new Promise((resolve) =>
-          setTimeout(resolve, Math.random() * 800),
-        );
-
         setProjects(data);
         setIsLoading(false);
       } catch (error) {

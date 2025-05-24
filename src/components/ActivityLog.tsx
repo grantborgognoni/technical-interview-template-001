@@ -36,8 +36,11 @@ export default function ActivityLog() {
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-  }, [activities]);
 
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
   return (
     <div className="rounded-lg border p-4">
       <h2 className="mb-4 text-xl font-semibold">Recent Activity</h2>
