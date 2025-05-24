@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 type MetricsCardProps = {
   title: string;
@@ -14,24 +14,36 @@ export default function MetricsCard({
   trendDirection,
 }: MetricsCardProps) {
   const [displayValue, setDisplayValue] = useState(0);
+  const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
-    let start = 0;
+    startTimeRef.current = null;
     const end = value;
     const duration = 1000;
-    const increment = end / (duration / 16);
 
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        clearInterval(timer);
-        setDisplayValue(end);
-      } else {
-        setDisplayValue(Math.floor(start));
+    function animate(currentTime: number) {
+      if (startTimeRef.current === null) {
+        startTimeRef.current = currentTime;
       }
-    }, 16);
+      const elapsed = currentTime - startTimeRef.current;
+      const progress = Math.min(elapsed / duration, 1);
+      const currentValue = Math.floor(progress * end);
 
-    return () => clearInterval(timer);
+      setDisplayValue(currentValue);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setDisplayValue(end);
+      }
+    }
+
+    const animationFrame = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      startTimeRef.current = null;
+    };
   }, [value]);
 
   return (
